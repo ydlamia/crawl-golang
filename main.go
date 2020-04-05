@@ -1,12 +1,14 @@
 package main
 
 import (
-	"net/http"
+	"os"
 	"strings"
 
 	"github.com/labstack/echo"
 	"github.com/ydlamia/crawl-golang/scrapper"
 )
+
+var csvFile string = "jobs.csv"
 
 func handleHome(c echo.Context) error {
 	// return c.String(http.StatusOK, "Hello, World!")
@@ -15,18 +17,22 @@ func handleHome(c echo.Context) error {
 
 //GET
 func handleSearch(c echo.Context) error {
+	defer os.Remove(csvFile)
 	searchString := c.QueryParam("searchValue")
 	scrapper.Scrape(searchString)
-	printvalue := searchString + " Crawling Done"
-	return c.String(http.StatusOK, printvalue)
+	// printvalue := searchString + " Crawling Done"
+	return c.Attachment(csvFile, csvFile)
+	// return c.String(http.StatusOK, printvalue)
 }
 
 //POST
 func handleScrape(c echo.Context) error {
+	defer os.Remove(csvFile)
 	term := strings.ToLower(scrapper.CleanString(c.FormValue("term")))
 	scrapper.Scrape(term)
-	printvalue := term + " Crawling Done"
-	return c.String(http.StatusOK, printvalue)
+	// printvalue := term + " Crawling Done"
+	return c.Attachment(csvFile, csvFile)
+	// return c.String(http.StatusOK, printvalue)
 }
 
 func main() {
