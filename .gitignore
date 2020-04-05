@@ -15,4 +15,4 @@
 # vendor/
 
 # Drop Execute Result
-.csv
+*.csv
